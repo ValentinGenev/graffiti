@@ -1,0 +1,34 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>graffiti</title>
+    <meta name="description" content="A basic anonymous message board.">
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <header>
+      <h1>graffiti</h1>
+
+      <form id="brands_list_login" action="inc/brands-list-fetcher.php" autocomplete="on">
+        <label for="alias">Alias</label>
+        <input type="text" name="alias" required>
+        <label for="message">Message</label>
+        <textarea name="message" required></textarea>
+        <input type="submit" value="Log in">
+  
+        <div class="response"></div>
+      </form>
+    </header>
+
+    <div id="lists_container"></div>
+  
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
