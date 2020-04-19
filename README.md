@@ -1,2 +1,2 @@
 # graffiti
-A basi anonymous message board
+A basic anonymous message board
