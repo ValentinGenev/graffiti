@@ -14,11 +14,12 @@ class Table_Actions {
 		$messages_table = '
 			CREATE TABLE IF NOT EXISTS Messages (
 				id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-				poster VARCHAR(256),
 				post_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+				poster_id VARCHAR(256),
+				poster TEXT,
 				message TEXT
 			);
-			CREATE INDEX poster_index ON Messages (poster(256));
+			CREATE INDEX poster_index ON Messages (poster_id(256));
 		';
 
 		if ($this->db_connection->multi_query($messages_table)) {
@@ -36,19 +37,19 @@ class Table_Actions {
 		";
 
 		if ($this->db_connection->query($message)) {
-			return 'Message sent.';
+			return 1;
 		}
 		else {
 			return 'Something went wrong: ' . $this->db_connection->error;
 		}
 	}
 
-	function get_messages() {
-		$get_query	= 'SELECT * FROM Messages';
-		$posts			= $this->db_connection->query($get_query);
+	function get_messages($count) {
+		$get_query	= "SELECT * FROM Messages LIMIT $count";
+		$messages		= $this->db_connection->query($get_query);
 
-		if ($posts) {
-			return $posts;
+		if ($messages) {
+			return $messages;
 		}
 		else {
 			return 'Something went wrong: ' . $this->db_connection->error;
