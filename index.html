@@ -15,20 +15,21 @@
     <header>
       <h1>graffiti</h1>
 
-      <form id="brands_list_login" action="inc/brands-list-fetcher.php" autocomplete="on">
+      <form id="new_message" action="database/create-message.php">
         <label for="alias">Alias</label>
-        <input type="text" name="alias" required>
+        <input type="text" name="alias">
         <label for="message">Message</label>
         <textarea name="message" required></textarea>
-        <input type="submit" value="Log in">
-  
+        <input type="submit" value="Post">
+
         <div class="response"></div>
       </form>
     </header>
 
-    <div id="lists_container"></div>
-  
+    <div id="messages_container" data-action="database/get-messages.php"></div>
+
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-    <script src="js/main.js"></script>
+    <script src="assets/js/post-message.js"></script>
+    <script src="assets/js/get-messages.js"></script>
   </body>
 </html>

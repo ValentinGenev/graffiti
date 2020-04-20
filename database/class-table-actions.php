@@ -29,7 +29,29 @@ class Table_Actions {
 		}
 	}
 
-	function create_messages_entry($message) {
+	function create_messages_entry($data) {
+		$message	= "
+			INSERT INTO Messages (poster, message)
+			VALUES ('{$data['poster']}', '{$data['message']}');
+		";
 
+		if ($this->db_connection->query($message)) {
+			return 'Message sent.';
+		}
+		else {
+			return 'Something went wrong: ' . $this->db_connection->error;
+		}
+	}
+
+	function get_messages() {
+		$get_query	= 'SELECT * FROM Messages';
+		$posts			= $this->db_connection->query($get_query);
+
+		if ($posts) {
+			return $posts;
+		}
+		else {
+			return 'Something went wrong: ' . $this->db_connection->error;
+		}
 	}
 }
