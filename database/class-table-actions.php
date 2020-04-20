@@ -11,8 +11,7 @@ class Table_Actions {
 	}
 
 	function create_messages_table() {
-		$messages_table = '
-			CREATE TABLE IF NOT EXISTS Messages (
+		$messages_table = 'CREATE TABLE IF NOT EXISTS Messages (
 				id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 				post_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 				poster_id VARCHAR(256),
@@ -31,9 +30,8 @@ class Table_Actions {
 	}
 
 	function create_messages_entry($data) {
-		$message	= "
-			INSERT INTO Messages (poster, message)
-			VALUES ('{$data['poster']}', '{$data['message']}');
+		$message	= "INSERT INTO Messages (poster_id, poster, message)
+			VALUES ('{$data['poster_id']}', '{$data['poster']}', '{$data['message']}');
 		";
 
 		if ($this->db_connection->query($message)) {
@@ -50,6 +48,18 @@ class Table_Actions {
 
 		if ($messages) {
 			return $messages;
+		}
+		else {
+			return 'Something went wrong: ' . $this->db_connection->error;
+		}
+	}
+
+	function get_last_message_by_poster($poster_id) {
+		$get_query	= "SELECT post_date FROM Messages WHERE poster_id = '$poster_id' ORDER BY post_date DESC LIMIT 1";
+		$message		= $this->db_connection->query($get_query);
+
+		if ($message) {
+			return $message;
 		}
 		else {
 			return 'Something went wrong: ' . $this->db_connection->error;

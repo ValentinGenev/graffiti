@@ -5,7 +5,7 @@
 
 
 include_once 'class-connection.php';
-include_once 'creds.php';
+include_once '../credentials/creds.php';
 
 $db_server_name = DB_SERVER_NAME;
 $db_user_name		= DB_USERNAME;
