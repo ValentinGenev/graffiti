@@ -1,25 +1,46 @@
 window.addEventListener("load", () => {
-	sendGetAjax('database/get-messages.php', { count: 10 }, showMessages);
+	const BODY					= document.querySelector('body')
+	const SCREEN_HEIGHT	= getScreenHeight()
+
+	// Initial GET call
+	fillScreenWithMessages(BODY, SCREEN_HEIGHT)
 })
+
+
+/**
+ * Fills the screen with messages
+ *
+ * @param {Node} body
+ * @param {Number} screenHeight
+ * @return {Number} bodyHeight
+ */
+function fillScreenWithMessages(body, screenHeight) {
+	let scrollOffset = screenHeight + 200
+
+	customGetFetch('./database/get-messages.php', { count: 10 }, showMessages).then(() => {
+		if (body.offsetHeight < scrollOffset) {
+			fillScreenWithMessages(body, screenHeight)
+		}
+	}).catch(({ responseText }) => {
+		console.log(responseText)
+	})
+}
 
 
 /**
  * Show messages
  *
- * @param {Object} xhr
+ * @param {JSON} messages
  */
-function showMessages(xhr) {
-	const { status, responseText } = xhr
-	const MESSAGE_CONTAINER = document.querySelector('#messages_container')
+function showMessages(messages) {
+	const MESSAGE_CONTAINER	= document.querySelector('#messages_container')
+	const MESSAGES					= JSON.parse(messages)
 
-	if (status === 200) {
-		JSON.parse(responseText).forEach(entry => {
-			MESSAGE_CONTAINER.appendChild(renderMessageEntry(entry))
-		});
-	}
-	else {
-		console.log(responseText)
-	}
+	MESSAGE_CONTAINER.dataset.lastLoadedMessage = MESSAGES[MESSAGES.length - 1].id
+
+	MESSAGES.forEach(entry => {
+		MESSAGE_CONTAINER.appendChild(renderMessageEntry(entry))
+	});
 }
 
 
@@ -27,16 +48,26 @@ function showMessages(xhr) {
  * Sends GET AJAX request to the backend
  *
  * @param {Function} callback
+ * @return {Promise} fetchResponse
  */
-function sendGetAjax(action, data, callback = (xhr) => console.log(xhr)) {
-  jQuery.ajax({
-    method: 'GET',
-    type:   'JSON',
-		url:    action,
-		data:		data,
+function customGetFetch(action, data, callback = (xhr) => console.log(xhr)) {
+	let urlWithParams = `${action}?`
+	Object.keys(data).forEach(param => urlWithParams += `${param}=${data[param]}&`)
 
-    complete(xhr) {
-      callback(xhr)
-    },
-  })
+	return new Promise((resolve, reject) => {
+		fetch(urlWithParams, { method: 'GET' }).then(response => {
+			let responseStatus = response.status
+
+			return response.text().then(response => { return { status: responseStatus, responseText: response } })
+
+		}).then(data => {
+			if (data.status === 200) {
+				callback(data.responseText)
+				resolve({ status: data.status, responseText: 'Messages rendered.' })
+			}
+			else {
+				reject({ status: data.status, responseText: data.responseText })
+			}
+		})
+	})
 }

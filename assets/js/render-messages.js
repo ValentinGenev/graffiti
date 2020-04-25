@@ -5,9 +5,10 @@
  * @returns {Node} entry
  */
 function renderMessageEntry(entry) {
-	const { post_date, poster, message } = entry
+	const { id, post_date, poster, message } = entry
 
 	let entryContainer				= document.createElement('div')
+	entryContainer.id					= id
 	entryContainer.className	= 'message'
 	entryContainer.innerText	= message
 

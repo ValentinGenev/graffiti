@@ -12,10 +12,10 @@ window.addEventListener("load", () => {
 /**
  * Shows users the server response
  *
- * @param {Object} xhr
+ * @param {String} responseText
  */
-function handleResponse(xhr) {
-	document.querySelector('#new_message .response').innerText = xhr.responseText
+function handleResponse(responseText) {
+	document.querySelector('#new_message .response').innerText = responseText
 }
 
 
@@ -28,30 +28,28 @@ function handleResponse(xhr) {
 function sendPostAjax(form, callback = (xhr) => console.log(xhr)) {
 	const INPUT_FIELDS		= form.querySelectorAll('input:not([type=submit])')
 	const TEXTAREA_FIELD	= form.querySelectorAll('textarea')
-	let formData					= {}
+	let formData					= new FormData()
 
-	INPUT_FIELDS.forEach(field => formData[field.getAttribute('name')] = field.value)
-	if (TEXTAREA_FIELD) TEXTAREA_FIELD.forEach(text => formData[text.getAttribute('name')] = text.value)
+	INPUT_FIELDS.forEach(field => formData.append(field.getAttribute('name'), field.value))
+	if (TEXTAREA_FIELD) TEXTAREA_FIELD.forEach(text => formData.append(text.getAttribute('name'), text.value))
 
 
-  jQuery.ajax({
-    method: 'POST',
-    type:   'JSON',
-    url:    form.getAttribute('action'),
-    data:   formData,
+	form.classList.toggle('loading')
 
-    beforeSend() {
-      form.classList.toggle('loading')
-    },
-    success(response) {
+	fetch(form.getAttribute('action'), {
+		method: 	'POST',
+		body:			formData,
+
+	}).then(response => {
+		if (response.status === 200) {
       form.reset()
-    },
-    error(xhr) {
-      console.log(xhr.responseText)
-    },
-    complete(xhr) {
-      form.classList.toggle('loading')
-      callback(xhr)
-    },
-  })
+		}
+
+		return response.text()
+
+	}).then(response => {
+		form.classList.toggle('loading')
+
+		callback(response)
+	})
 }

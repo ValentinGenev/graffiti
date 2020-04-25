@@ -7,10 +7,11 @@
 include_once 'create-connection.php';
 include_once 'class-table-actions.php';
 
-$messages_count	= isset($_GET['count']) ? $_GET['count'] : 10;
+$payload_count	= isset($_GET['count']) ? $_GET['count'] : 10;
+$last_loaded		= isset($_GET['last_loaded']) ? $_GET['last_loaded'] : null;
 
 $db_controller	= new Table_Actions($connection);
-$db_response		= $db_controller->get_messages($messages_count);
+$db_response		= $db_controller->get_messages($payload_count, $last_loaded);
 
 if (isset($db_response->num_rows) && $db_response->num_rows > 0) {
 	$messages = [];
@@ -24,5 +25,5 @@ if (isset($db_response->num_rows) && $db_response->num_rows > 0) {
 }
 else {
 	http_response_code(404);
-	print_r('Clear wall.');
+	print_r('Something went wrong.');
 }
