@@ -34,8 +34,8 @@ function fillScreenWithMessages(body, screenHeight) {
 	let lastLoadedMessage	= document.querySelector('#messages_container').dataset.lastLoadedMessage
 	let scrollOffset			= screenHeight + 200
 
-	customGetFetch('./database/get-messages.php', { count: 10, last_loaded: lastLoadedMessage }, showMessages).then(() => {
-		if (body.offsetHeight < scrollOffset) {
+	customGetFetch('./database/get-messages.php', { count: 10, last_loaded: lastLoadedMessage }, showMessages).then(({ status }) => {
+		if (body.offsetHeight < scrollOffset && status < 400) {
 			fillScreenWithMessages(body, screenHeight)
 		}
 	}).catch(({ responseText }) => {
