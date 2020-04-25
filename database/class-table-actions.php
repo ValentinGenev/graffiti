@@ -44,7 +44,7 @@ class Table_Actions {
 
 	function get_messages($count, $last_loaded) {
 		$where			= $last_loaded ? "WHERE id < $last_loaded " : '';
-		$get_query	= "SELECT * FROM Messages $where ORDER BY post_date DESC LIMIT $count";
+		$get_query	= "SELECT * FROM Messages $where ORDER BY id DESC LIMIT $count";
 		$messages		= $this->db_connection->query($get_query);
 
 		if ($messages) {

@@ -1,9 +1,25 @@
 window.addEventListener("load", () => {
-	const BODY					= document.querySelector('body')
-	const SCREEN_HEIGHT	= getScreenHeight()
+	const SCREEN_HEIGHT			= getScreenHeight()
+	const BODY							= document.querySelector('body')
+	const MESSAGE_CONTAINER	= document.querySelector('#messages_container')
 
 	// Initial GET call
-	fillScreenWithMessages(BODY, SCREEN_HEIGHT)
+	customGetFetch('./database/get-messages.php', { count: 10 }, showMessages).then(() => {
+		fillScreenWithMessages(BODY, SCREEN_HEIGHT)
+	})
+
+	// Load more messages when near the bottom of the list
+	const ENDLESS_SCROLL		= throttle(() => {
+		if (window.pageYOffset + SCREEN_HEIGHT > BODY.offsetHeight - 100) {
+			window.removeEventListener('scroll', ENDLESS_SCROLL)
+
+			customGetFetch('./database/get-messages.php', { count: 10, last_loaded: MESSAGE_CONTAINER.dataset.lastLoadedMessage }, showMessages).then(() => {
+				window.addEventListener('scroll', ENDLESS_SCROLL)
+			})
+		}
+	}, 1)
+
+	window.addEventListener('scroll', ENDLESS_SCROLL)
 })
 
 
@@ -15,9 +31,10 @@ window.addEventListener("load", () => {
  * @return {Number} bodyHeight
  */
 function fillScreenWithMessages(body, screenHeight) {
-	let scrollOffset = screenHeight + 200
+	let lastLoadedMessage	= document.querySelector('#messages_container').dataset.lastLoadedMessage
+	let scrollOffset			= screenHeight + 200
 
-	customGetFetch('./database/get-messages.php', { count: 10 }, showMessages).then(() => {
+	customGetFetch('./database/get-messages.php', { count: 10, last_loaded: lastLoadedMessage }, showMessages).then(() => {
 		if (body.offsetHeight < scrollOffset) {
 			fillScreenWithMessages(body, screenHeight)
 		}
@@ -37,10 +54,7 @@ function showMessages(messages) {
 	const MESSAGES					= JSON.parse(messages)
 
 	MESSAGE_CONTAINER.dataset.lastLoadedMessage = MESSAGES[MESSAGES.length - 1].id
-
-	MESSAGES.forEach(entry => {
-		MESSAGE_CONTAINER.appendChild(renderMessageEntry(entry))
-	});
+	MESSAGES.forEach(entry => MESSAGE_CONTAINER.appendChild(renderMessageEntry(entry)))
 }
 
 
@@ -50,7 +64,7 @@ function showMessages(messages) {
  * @param {Function} callback
  * @return {Promise} fetchResponse
  */
-function customGetFetch(action, data, callback = (xhr) => console.log(xhr)) {
+function customGetFetch(action, data, callback = (responseText) => console.log(responseText)) {
 	let urlWithParams = `${action}?`
 	Object.keys(data).forEach(param => urlWithParams += `${param}=${data[param]}&`)
 

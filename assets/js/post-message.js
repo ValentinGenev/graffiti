@@ -4,7 +4,7 @@ window.addEventListener("load", () => {
 	NEW_MESSAGE.addEventListener('submit', event => {
 		event.preventDefault()
 
-		sendPostAjax(NEW_MESSAGE, handleResponse)
+		postFetch(NEW_MESSAGE, handleResponse)
 	})
 })
 
@@ -25,11 +25,13 @@ function handleResponse(responseText) {
  * @param {Node} form
  * @param {Function} callback
  */
-function sendPostAjax(form, callback = (xhr) => console.log(xhr)) {
+function postFetch(form, callback = (responseText) => console.log(responseText)) {
 	const INPUT_FIELDS		= form.querySelectorAll('input:not([type=submit])')
 	const TEXTAREA_FIELD	= form.querySelectorAll('textarea')
 	let formData					= new FormData()
 
+
+	// Get all fields' values
 	INPUT_FIELDS.forEach(field => formData.append(field.getAttribute('name'), field.value))
 	if (TEXTAREA_FIELD) TEXTAREA_FIELD.forEach(text => formData.append(text.getAttribute('name'), text.value))
 
@@ -47,9 +49,9 @@ function sendPostAjax(form, callback = (xhr) => console.log(xhr)) {
 
 		return response.text()
 
-	}).then(response => {
+	}).then(responseText => {
 		form.classList.toggle('loading')
 
-		callback(response)
+		callback(responseText)
 	})
 }

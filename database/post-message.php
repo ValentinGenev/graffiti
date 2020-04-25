@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		die;
 	}
 
-	$data['poster']			= isset($_POST['alias']) ? $_POST['alias'] : 'Anonymous';
+	$data['poster']			= $_POST['alias'] !== '' ? $_POST['alias'] : 'Anonymous';
 	$data['message']		= $_POST['message'];
 	$db_response				= $db_controller->create_messages_entry($data);
 
