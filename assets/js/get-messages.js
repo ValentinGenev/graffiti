@@ -1,5 +1,5 @@
 window.addEventListener("load", () => {
-	sendGetAjax('database/get-messages.php', { count: 10 }, showMEssages);
+	sendGetAjax('database/get-messages.php', { count: 10 }, showMessages);
 })
 
 
@@ -8,8 +8,18 @@ window.addEventListener("load", () => {
  *
  * @param {Object} xhr
  */
-function showMEssages(xhr) {
-	document.querySelector('#messages_container').innerText = xhr.responseText
+function showMessages(xhr) {
+	const { status, responseText } = xhr
+	const MESSAGE_CONTAINER = document.querySelector('#messages_container')
+
+	if (status === 200) {
+		JSON.parse(responseText).forEach(entry => {
+			MESSAGE_CONTAINER.appendChild(renderMessageEntry(entry))
+		});
+	}
+	else {
+		console.log(responseText)
+	}
 }
 
 

@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 	$data['poster_id']	= hash('md5', '0.0.0.1', false); // $_SERVER['REMOTE_ADDR']
 	$poster_last_post		= $db_controller->get_last_message_by_poster($data['poster_id'])->fetch_assoc();
-	$poster_is_spammy		= check_if_poster_is_spammy($poster_last_post);
+	$poster_is_spammy		= check_if_poster_is_spammy($poster_last_post, 2);
 
 	if ($poster_is_spammy) {
 		http_response_code(403);
