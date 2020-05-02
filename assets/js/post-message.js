@@ -5,8 +5,24 @@ window.addEventListener("load", () => {
 		event.preventDefault()
 
 		postFetch(NEW_MESSAGE, handleResponse)
+		.then(({ lastMessage }) => {
+			showPostersMessage(lastMessage)
+		})
 	})
 })
+
+
+/**
+ * Show poster's last message
+ *
+ * @param {JSON} message
+ */
+function showPostersMessage(message) {
+	const MESSAGE_CONTAINER	= document.querySelector('#messages_container')
+
+	MESSAGE_CONTAINER.insertBefore(renderMessageEntry(message), MESSAGE_CONTAINER.firstChild)
+	MESSAGE_CONTAINER.firstChild.classList.add('latest')
+}
 
 
 /**
@@ -38,20 +54,29 @@ function postFetch(form, callback = (responseText) => console.log(responseText))
 
 	form.classList.toggle('loading')
 
-	fetch(form.getAttribute('action'), {
-		method: 	'POST',
-		body:			formData,
+	return new Promise((resolve, reject) => {
+		fetch(form.getAttribute('action'), {
+			method: 	'POST',
+			body:			formData,
+		})
+		.then(response => {
+			if (response.status === 200) {
+				form.reset()
+			}
 
-	}).then(response => {
-		if (response.status === 200) {
-      form.reset()
-		}
+			return response.text()
+		})
+		.then(responseText => {
+			form.classList.toggle('loading')
 
-		return response.text()
+			const { last_message, response_message } = JSON.parse(responseText)
 
-	}).then(responseText => {
-		form.classList.toggle('loading')
-
-		callback(responseText)
+			callback(response_message)
+			resolve({ lastMessage: last_message, responseText: response_message })
+		})
+		.catch(reason => {
+			callback(reason)
+			reject({ responseText: reason })
+		})
 	})
 }

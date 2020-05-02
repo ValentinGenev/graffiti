@@ -42,8 +42,8 @@ class Table_Actions {
 		}
 	}
 
-	function get_messages($count, $last_loaded) {
-		$where			= $last_loaded ? "WHERE id < $last_loaded " : '';
+	function get_messages($count = 10, $oldest_loaded = null) {
+		$where			= $oldest_loaded ? "WHERE id < $oldest_loaded " : '';
 		$get_query	= "SELECT * FROM Messages $where ORDER BY id DESC LIMIT $count";
 		$messages		= $this->db_connection->query($get_query);
 
@@ -56,7 +56,7 @@ class Table_Actions {
 	}
 
 	function get_last_message_by_poster($poster_id) {
-		$get_query	= "SELECT post_date FROM Messages WHERE poster_id = '$poster_id' ORDER BY post_date DESC LIMIT 1";
+		$get_query	= "SELECT * FROM Messages WHERE poster_id = '$poster_id' ORDER BY post_date DESC LIMIT 1";
 		$message		= $this->db_connection->query($get_query);
 
 		if ($message) {

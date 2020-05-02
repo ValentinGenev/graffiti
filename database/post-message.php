@@ -28,7 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 	if ($db_response === 1) {
 		http_response_code(200);
-		print_r('Message sent.');
+
+		$response_text['last_message']			= $db_controller->get_last_message_by_poster($data['poster_id'])->fetch_assoc();
+		$response_text['response_message']	= 'Message sent.';
+		print_r(json_encode($response_text));
 	}
 	else {
 		http_response_code(400);

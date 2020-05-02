@@ -8,10 +8,10 @@ include_once 'create-connection.php';
 include_once 'class-table-actions.php';
 
 $payload_count	= isset($_GET['count']) ? $_GET['count'] : 10;
-$last_loaded		= isset($_GET['last_loaded']) ? $_GET['last_loaded'] : null;
+$oldest_loaded	= isset($_GET['oldest_loaded']) ? $_GET['oldest_loaded'] : null;
 
 $db_controller	= new Table_Actions($connection);
-$db_response		= $db_controller->get_messages($payload_count, $last_loaded);
+$db_response		= $db_controller->get_messages($payload_count, $oldest_loaded);
 
 if (isset($db_response->num_rows) && $db_response->num_rows > 0) {
 	$messages = [];
@@ -25,5 +25,5 @@ if (isset($db_response->num_rows) && $db_response->num_rows > 0) {
 }
 else {
 	http_response_code(404);
-	print_r('Something went wrong.');
+	print_r('No messages were loaded.');
 }
