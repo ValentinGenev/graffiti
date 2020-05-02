@@ -61,7 +61,7 @@ function showMessages(messages) {
 	const MESSAGES					= JSON.parse(messages)
 
 	MESSAGE_CONTAINER.dataset.oldestLoadedMessage = MESSAGES[MESSAGES.length - 1].id
-	MESSAGES.forEach(entry => MESSAGE_CONTAINER.appendChild(renderMessageEntry(entry)))
+	MESSAGES.forEach(entry => MESSAGE_CONTAINER.appendChild(renderMessageEntry(entry, 'old')))
 }
 
 
@@ -71,14 +71,16 @@ function showMessages(messages) {
  * @param {JSON} messages
  */
 function showNewerPosts(messages) {
-	// To do: this is now working good yet
 	const MESSAGE_CONTAINER				= document.querySelector('#messages_container')
-	const LATEST_ARCHIVED_MESSAGE	= document.querySelector('.message:not(.op-latest)')
+	const LATEST_ARCHIVED_MESSAGE	= document.querySelector('.message.old')
+	const LATEST_POSTED_MESSAGE		= document.querySelector('.message.op-latest:nth-of-type(2)') ?
+																	document.querySelector('.message.op-latest:nth-of-type(2)') :
+																	document.querySelector('.message.op-latest') // makes sure that I'm taking latest instead of the current OP post
 	const MESSAGES								= JSON.parse(messages)
 
 	MESSAGES.forEach(entry => {
-		if (entry.id > MESSAGE_CONTAINER.dataset.newestLoadedMessage) {
-			MESSAGE_CONTAINER.insertBefore(renderMessageEntry(entry), LATEST_ARCHIVED_MESSAGE)
+		if (entry.id > MESSAGE_CONTAINER.dataset.newestLoadedMessage && entry.id !== LATEST_POSTED_MESSAGE.id) {
+			MESSAGE_CONTAINER.insertBefore(renderMessageEntry(entry, 'missed'), LATEST_ARCHIVED_MESSAGE)
 		}
 		else {
 			console.log(entry.id)

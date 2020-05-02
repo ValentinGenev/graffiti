@@ -14,11 +14,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 	$data['poster_id']	= hash('md5', '0.0.0.1', false); // $_SERVER['REMOTE_ADDR']
 	$poster_last_post		= $db_controller->get_last_message_by_poster($data['poster_id'])->fetch_assoc();
-	$poster_is_spammy		= check_if_poster_is_spammy($poster_last_post, 2);
+	$post_timeout				= 1;
+	$poster_is_spammy		= check_if_poster_is_spammy($poster_last_post, $post_timeout);
 
 	if ($poster_is_spammy) {
 		http_response_code(403);
-		print_r('Please wait 2 minutes before posting again.');
+		print_r("Please wait $post_timeout minutes before posting again.");
 		die;
 	}
 
