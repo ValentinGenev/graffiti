@@ -4,8 +4,9 @@ window.addEventListener("load", () => {
 	const MESSAGE_CONTAINER	= document.querySelector('#messages_container')
 
 	// Initial GET call
-	customGetFetch('./database/get-messages.php', { count: 10 }, showMessages)
+	customGetFetch({ count: 10 }, showMessages)
 	.then(() => {
+		document.querySelector('#messages_container').dataset.newestLoadedMessage = MESSAGE_CONTAINER.firstChild.id
 		fillScreenWithMessages(BODY, SCREEN_HEIGHT)
 	})
 
@@ -14,7 +15,7 @@ window.addEventListener("load", () => {
 		if (window.pageYOffset + SCREEN_HEIGHT > BODY.offsetHeight - 100) {
 			window.removeEventListener('scroll', ENDLESS_SCROLL)
 
-			customGetFetch('./database/get-messages.php', { count: 10, oldest_loaded: MESSAGE_CONTAINER.dataset.oldestLoadedMessage }, showMessages)
+			customGetFetch({ count: 10, oldest_loaded: MESSAGE_CONTAINER.dataset.oldestLoadedMessage }, showMessages)
 			.then(() => {
 				window.addEventListener('scroll', ENDLESS_SCROLL)
 			})
@@ -36,9 +37,9 @@ window.addEventListener("load", () => {
  */
 function fillScreenWithMessages(body, screenHeight) {
 	let oldestLoadedMessage	= document.querySelector('#messages_container').dataset.oldestLoadedMessage
-	let scrollOffset			= screenHeight + 200
+	let scrollOffset				= screenHeight + 200
 
-	customGetFetch('./database/get-messages.php', { count: 10, oldest_loaded: oldestLoadedMessage }, showMessages)
+	customGetFetch({ count: 10, oldest_loaded: oldestLoadedMessage }, showMessages)
 	.then(({ status }) => {
 		if (body.offsetHeight < scrollOffset && status < 400) {
 			fillScreenWithMessages(body, screenHeight)
@@ -65,12 +66,39 @@ function showMessages(messages) {
 
 
 /**
+ * Shows unloaded new messages on event
+ *
+ * @param {JSON} messages
+ */
+function showNewerPosts(messages) {
+	// To do: this is now working good yet
+	const MESSAGE_CONTAINER				= document.querySelector('#messages_container')
+	const LATEST_ARCHIVED_MESSAGE	= document.querySelector('.message:not(.op-latest)')
+	const MESSAGES								= JSON.parse(messages)
+
+	MESSAGES.forEach(entry => {
+		if (entry.id > MESSAGE_CONTAINER.dataset.newestLoadedMessage) {
+			MESSAGE_CONTAINER.insertBefore(renderMessageEntry(entry), LATEST_ARCHIVED_MESSAGE)
+		}
+		else {
+			console.log(entry.id)
+		}
+	})
+	// To do: write a check if last message from this array had id bigger than LATEST_ARCHIVED_MESSAGE
+	// and make a new request for them until all are loaded
+	MESSAGE_CONTAINER.dataset.newestLoadedMessage = MESSAGES[0].id
+}
+
+
+/**
  * Sends GET AJAX request to the backend
  *
- * @param {Function} callback
- * @return {Promise} fetchResponse
+ * @param		{Objecet}		data
+ * @param		{Function}	callback
+ * @param		{String}		action
+ * @return	{Promise}		fetchResponse
  */
-function customGetFetch(action, data, callback = (responseText) => console.log(responseText)) {
+function customGetFetch(data, callback = (responseText) => console.log(responseText), action = './database/get-messages.php') {
 	let urlWithParams = `${action}?`
 	Object.keys(data).forEach(param => urlWithParams += `${param}=${data[param]}&`)
 

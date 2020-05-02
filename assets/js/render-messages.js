@@ -2,7 +2,7 @@
  * Creates the markup of a single entry
  *
  * @param {Object} entry
- * @returns {Node} entry
+ * @returns {Node} entryContainer
  */
 function renderMessageEntry(entry) {
 	const { id, post_date, poster, message } = entry

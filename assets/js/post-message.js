@@ -5,8 +5,10 @@ window.addEventListener("load", () => {
 		event.preventDefault()
 
 		postFetch(NEW_MESSAGE, handleResponse)
-		.then(({ lastMessage }) => {
-			showPostersMessage(lastMessage)
+		.then(({ postedMessage }) => {
+			showPostersMessage(postedMessage)
+
+			customGetFetch({ count: 10, oldest_loaded: postedMessage.id}, showNewerPosts)
 		})
 	})
 })
@@ -15,13 +17,13 @@ window.addEventListener("load", () => {
 /**
  * Show poster's last message
  *
- * @param {JSON} message
+ * @param {Object} message
  */
 function showPostersMessage(message) {
 	const MESSAGE_CONTAINER	= document.querySelector('#messages_container')
 
 	MESSAGE_CONTAINER.insertBefore(renderMessageEntry(message), MESSAGE_CONTAINER.firstChild)
-	MESSAGE_CONTAINER.firstChild.classList.add('latest')
+	MESSAGE_CONTAINER.firstChild.classList.add('op-latest')
 }
 
 
@@ -60,19 +62,27 @@ function postFetch(form, callback = (responseText) => console.log(responseText))
 			body:			formData,
 		})
 		.then(response => {
-			if (response.status === 200) {
-				form.reset()
-			}
+			let responseStatus = response.status
 
-			return response.text()
-		})
-		.then(responseText => {
 			form.classList.toggle('loading')
 
-			const { last_message, response_message } = JSON.parse(responseText)
+			return response.text().then(response => { return { status: responseStatus, responseText: response } })
+		})
+		.then(response => {
+			const {status, responseText} = response
 
-			callback(response_message)
-			resolve({ lastMessage: last_message, responseText: response_message })
+			if (status === 200) {
+				form.reset()
+
+				const { posted_message, response_message } = JSON.parse(responseText)
+
+				callback(response_message)
+				resolve({ postedMessage: posted_message, responseText: response_message })
+			}
+			else {
+				callback(responseText)
+				reject({ responseText: responseText })
+			}
 		})
 		.catch(reason => {
 			callback(reason)
