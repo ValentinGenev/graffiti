@@ -73,21 +73,9 @@ function showMessages(messages) {
 function showNewerPosts(messages) {
 	const MESSAGE_CONTAINER				= document.querySelector('#messages_container')
 	const LATEST_ARCHIVED_MESSAGE	= document.querySelector('.message.old')
-	const LATEST_POSTED_MESSAGE		= document.querySelector('.message.op-latest:nth-of-type(2)') ?
-																	document.querySelector('.message.op-latest:nth-of-type(2)') :
-																	document.querySelector('.message.op-latest') // makes sure that I'm taking latest instead of the current OP post
 	const MESSAGES								= JSON.parse(messages)
 
-	MESSAGES.forEach(entry => {
-		if (entry.id > MESSAGE_CONTAINER.dataset.newestLoadedMessage && entry.id !== LATEST_POSTED_MESSAGE.id) {
-			MESSAGE_CONTAINER.insertBefore(renderMessageEntry(entry, 'missed'), LATEST_ARCHIVED_MESSAGE)
-		}
-		else {
-			console.log(entry.id)
-		}
-	})
-	// To do: write a check if last message from this array had id bigger than LATEST_ARCHIVED_MESSAGE
-	// and make a new request for them until all are loaded
+	MESSAGES.forEach(entry => MESSAGE_CONTAINER.insertBefore(renderMessageEntry(entry, 'missed'), LATEST_ARCHIVED_MESSAGE))
 	MESSAGE_CONTAINER.dataset.newestLoadedMessage = MESSAGES[0].id
 }
 

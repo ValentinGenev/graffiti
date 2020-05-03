@@ -25,3 +25,16 @@ function renderMessageEntry(entry, className = '') {
 
 	return entryContainer
 }
+
+/**
+ *
+ * @param {Number} messagesCount
+ * @returns {Node} loadMore
+ */
+function renderLoadMore(messagesCount) {
+	let loadMore				= document.createElement('button')
+	loadMore.className	= 'load-more'
+	loadMore.innerText 	= messagesCount > 1 ? `${messagesCount} unloaded messages` : `${messagesCount} unloaded message`
+
+	return loadMore
+}

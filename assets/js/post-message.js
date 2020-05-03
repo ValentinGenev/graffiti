@@ -1,14 +1,29 @@
 window.addEventListener("load", () => {
-	const NEW_MESSAGE = document.querySelector('#new_message')
+	const NEW_MESSAGE					= document.querySelector('#new_message')
+	const MESSAGES_CONTAINER	= document.querySelector('#messages_container')
 
 	NEW_MESSAGE.addEventListener('submit', event => {
 		event.preventDefault()
 
 		postFetch(NEW_MESSAGE, handleResponse)
 		.then(({ postedMessage }) => {
+			document.querySelectorAll('.yours').forEach(message => message.classList.add('old'))
+
 			showPostersMessage(postedMessage)
 
-			customGetFetch({ count: 10, oldest_loaded: postedMessage.id}, showNewerPosts)
+			let firstOldMessage		= document.querySelector('.message.old')
+			let unloadedMessages	= (postedMessage.id - firstOldMessage.id) - 1 // the difference between two IDs has the value of minimum 1
+
+			if (unloadedMessages !== 0) {
+				let loadMoreButton	= renderLoadMore(unloadedMessages)
+
+				loadMoreButton.addEventListener('click', function() {
+					customGetFetch({ count: unloadedMessages, oldest_loaded: postedMessage.id}, showNewerPosts)
+					this.remove()
+				})
+
+				MESSAGES_CONTAINER.insertBefore(loadMoreButton, firstOldMessage)
+			}
 		})
 	})
 })
@@ -20,10 +35,10 @@ window.addEventListener("load", () => {
  * @param {Object} message
  */
 function showPostersMessage(message) {
-	const MESSAGE_CONTAINER	= document.querySelector('#messages_container')
+	const MESSAGES_CONTAINER	= document.querySelector('#messages_container')
 
-	MESSAGE_CONTAINER.insertBefore(renderMessageEntry(message), MESSAGE_CONTAINER.firstChild)
-	MESSAGE_CONTAINER.firstChild.classList.add('op-latest')
+	MESSAGES_CONTAINER.insertBefore(renderMessageEntry(message), MESSAGES_CONTAINER.firstChild)
+	MESSAGES_CONTAINER.firstChild.classList.add('yours')
 }
 
 
