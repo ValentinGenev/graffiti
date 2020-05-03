@@ -3,12 +3,13 @@ window.addEventListener("load", () => {
 	const BODY							= document.querySelector('body')
 	const MESSAGE_CONTAINER	= document.querySelector('#messages_container')
 
+
 	// Initial GET call
 	customGetFetch({ count: 10 }, showMessages)
 	.then(() => {
-		document.querySelector('#messages_container').dataset.newestLoadedMessage = MESSAGE_CONTAINER.firstChild.id
 		fillScreenWithMessages(BODY, SCREEN_HEIGHT)
 	})
+
 
 	// Load more messages when near the bottom of the list
 	const ENDLESS_SCROLL		= throttle(() => {
@@ -26,6 +27,14 @@ window.addEventListener("load", () => {
 	}, 100)
 
 	window.addEventListener('scroll', ENDLESS_SCROLL)
+
+
+	// Back on the page load
+	window.addEventListener('focus', () => {
+		let lastPost = document.querySelector('.message')
+
+		customGetFetch({count: 10, newest_loaded: lastPost.id }, showNewestMessages)
+	})
 })
 
 
@@ -70,13 +79,26 @@ function showMessages(messages) {
  *
  * @param {JSON} messages
  */
-function showNewerPosts(messages) {
+function showNewerMessages(messages) {
 	const MESSAGE_CONTAINER				= document.querySelector('#messages_container')
 	const LATEST_ARCHIVED_MESSAGE	= document.querySelector('.message.old')
 	const MESSAGES								= JSON.parse(messages)
 
 	MESSAGES.forEach(entry => MESSAGE_CONTAINER.insertBefore(renderMessageEntry(entry, 'missed'), LATEST_ARCHIVED_MESSAGE))
-	MESSAGE_CONTAINER.dataset.newestLoadedMessage = MESSAGES[0].id
+}
+
+
+/**
+ * Shows unloaded new messages on event
+ *
+ * @param {JSON} messages
+ */
+function showNewestMessages(messages) {
+	const MESSAGE_CONTAINER				= document.querySelector('#messages_container')
+	const LATEST_ARCHIVED_MESSAGE	= document.querySelector('.message')
+	const MESSAGES								= JSON.parse(messages)
+
+	MESSAGES.forEach(entry => MESSAGE_CONTAINER.insertBefore(renderMessageEntry(entry, 'missed old'), LATEST_ARCHIVED_MESSAGE))
 }
 
 

@@ -18,7 +18,7 @@ window.addEventListener("load", () => {
 				let loadMoreButton	= renderLoadMore(unloadedMessages)
 
 				loadMoreButton.addEventListener('click', function() {
-					customGetFetch({ count: unloadedMessages, oldest_loaded: postedMessage.id}, showNewerPosts)
+					customGetFetch({ count: unloadedMessages, oldest_loaded: postedMessage.id}, showNewerMessages)
 					this.remove()
 				})
 

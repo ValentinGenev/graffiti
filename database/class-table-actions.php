@@ -42,8 +42,9 @@ class Table_Actions {
 		}
 	}
 
-	function get_messages($count = 10, $oldest_loaded = null) {
+	function get_messages($count = 10, $oldest_loaded = null, $newest_loaded = null) {
 		$where			= $oldest_loaded ? "WHERE id < $oldest_loaded " : '';
+		$where			= $newest_loaded ? "WHERE id > $newest_loaded " : $where;
 		$get_query	= "SELECT * FROM Messages $where ORDER BY id DESC LIMIT $count";
 		$messages		= $this->db_connection->query($get_query);
 
