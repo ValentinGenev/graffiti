@@ -24,7 +24,7 @@ window.addEventListener("load", () => {
 				console.log(status === 404 ? 'All messages were loaded.' : responseText)
 			})
 		}
-	}, 100)
+	}, 50)
 
 	window.addEventListener('scroll', ENDLESS_SCROLL)
 

@@ -1,0 +1,163 @@
+/*
+ * Defaults for the body
+ */
+body {
+	margin: 0;
+	padding: 2rem;
+	font-family: 'Roboto Slab', 'Times New Roman', Times, serif;
+	font-size: 16px;
+	color: #000;
+}
+
+@media screen and (min-width: 2048px) {
+	body {
+		font-size: 18px;
+	}
+}
+@media screen and (max-width: 768px) {
+	body {
+		padding: 1rem;
+		font-size: 14px;
+	}
+}
+
+
+/*
+ * Common elements
+ */
+h1 {
+	margin: 0;
+	margin-bottom: 4rem;
+}
+
+input:focus,
+input:active,
+textarea:focus,
+textarea:active {
+	outline: 2px solid #000;
+}
+
+
+/*
+ * Common classes
+ */
+.hide {
+	display: none;
+}
+
+.button {
+	color: #fff;
+	background-color: #000;
+	border: 1px solid #000;
+	cursor: pointer;
+}
+.button:hover {
+	color: #000;
+	background-color: #fff;
+	transition: all .25s;
+}
+
+
+/*
+ * The form
+ */
+#new_message {
+	display: grid;
+	grid-template-columns: 240px 1fr;
+	gap: 0 1.5rem;
+}
+#new_message input,
+#new_message textarea {
+	max-height: 2.25rem;
+	padding: .5rem;
+	box-sizing: border-box;
+	border: 1px solid #000;
+}
+#new_message textarea {
+	font-family: 'Roboto Slab', 'Times New Roman', Times, serif;
+	resize: none;
+}
+#new_message label[for=alias],
+#new_message input[name=alias] {
+	grid-column: 1;
+}
+#new_message label[for=message],
+#new_message textarea[name=message] {
+	grid-column: 2;
+}
+#new_message label[for=message] {
+	grid-row: 1;
+}
+#new_message input[type=submit] {
+	grid-column: 2;
+	justify-self: end;
+	max-width: 240px;
+	width: 100%;
+	margin: 2rem 0;
+	font-family: 'Roboto Slab', 'Times New Roman', Times, serif;
+}
+#new_message .response {
+	grid-column: span 2;
+}
+
+@media screen and (max-width: 768px) {
+	#new_message {
+		grid-template-columns: 1fr;
+	}
+	#new_message label[for=alias],
+	#new_message input[name=alias] {
+		max-width: 240px;
+		width: 100%;
+	}
+	#new_message label[for=message],
+	#new_message textarea[name=message],
+	#new_message input[type=submit],
+	#new_message .response {
+		grid-column: 1;
+		grid-row: auto;
+	}
+	#new_message label[for=message] {
+		margin-top: 1rem;
+	}
+}
+
+
+/*
+ * The messages'container
+ */
+#messages_container {
+	position: relative;
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	width: calc(100% + 1.5rem);
+	left: -1.5rem;
+	margin-top: 2rem;
+}
+.message {
+	margin-left: 1.5rem;
+	margin-bottom: 1rem;
+}
+.yours .message-content {
+	text-decoration: underline;
+}
+.message-poster,
+.message-date {
+	padding-left: .5rem;
+	font-weight: 300;
+}
+.message-poster {
+	font-style: italic;
+}
+.load-more {
+	position: relative;
+	top: -.5rem;
+	margin-left: 1.5rem;
+	padding: .5rem 1rem;
+}
+
+@media screen and (max-width: 414px) {
+	.message {
+		word-break: break-all;
+	}
+}

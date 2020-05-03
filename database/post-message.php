@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 	if ($poster_is_spammy) {
 		http_response_code(403);
-		print_r("Please wait $post_timeout minutes before posting again.");
+		print_r("Please wait $post_timeout minutes before writing again.");
 		die;
 	}
 

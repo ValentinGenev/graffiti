@@ -7,8 +7,8 @@
     <title>graffiti</title>
     <meta name="description" content="A basic anonymous message board.">
 
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <!-- <link href="css/main.css" rel="stylesheet"> -->
+		<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="assets/css/main.css" rel="stylesheet">
   </head>
 
   <body>
@@ -16,11 +16,11 @@
       <h1>graffiti</h1>
 
       <form id="new_message" action="database/post-message.php">
-        <label for="alias">Alias</label>
+        <label for="alias">alias</label>
         <input type="text" name="alias">
-        <label for="message">Message</label>
+        <label for="message">message</label>
         <textarea name="message" required></textarea>
-        <input type="submit" value="Post">
+        <input class="button" type="submit" value="write">
 
         <div class="response"></div>
       </form>
