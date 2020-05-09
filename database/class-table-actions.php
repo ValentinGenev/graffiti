@@ -30,8 +30,12 @@ class Table_Actions {
 	}
 
 	function create_messages_entry($data) {
+		$poster_id	= $this->db_connection->real_escape_string($data['poster_id']);
+		$poster			= $this->db_connection->real_escape_string($data['poster']);
+		$message		= $this->db_connection->real_escape_string($data['message']);
+
 		$message	= "INSERT INTO Messages (poster_id, poster, message)
-			VALUES ('{$data['poster_id']}', '{$data['poster']}', '{$data['message']}');
+			VALUES ('$poster_id', '{$poster}', '{$message}');
 		";
 
 		if ($this->db_connection->query($message)) {

@@ -129,6 +129,7 @@ textarea:active {
 	position: relative;
 	display: flex;
 	justify-content: space-between;
+	align-items: flex-end;
 	flex-wrap: wrap;
 	width: calc(100% + 1.5rem);
 	left: -1.5rem;
@@ -141,7 +142,8 @@ textarea:active {
 .yours .message-content {
 	text-decoration: underline;
 }
-.message-content {
+.message-content,
+.message-poster {
 	margin-right: .5rem;
 }
 .message-poster,
@@ -150,9 +152,6 @@ textarea:active {
 }
 .message-poster {
 	font-style: italic;
-}
-.message-date {
-	padding-left: .5rem;
 }
 .load-more {
 	position: relative;

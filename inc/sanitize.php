@@ -6,8 +6,8 @@
  * @param {string} $message
  * @return {string} $sanitized_message
  */
-function sanitize_message($message) {
-	$blacklisted_tags								= ['style', 'iframe'];
+function sanitize_message_html($message) {
+	$blacklisted_tags								= ['style', 'iframe', 'svg'];
 	$message_string									= '<span class="message-content">' . $message . '</span>';
 	$message_html										= new DOMDocument();
 	$message_html->validateOnParse	= true;

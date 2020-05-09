@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	}
 
 	$data['poster']			= $_POST['alias'] !== '' ? $_POST['alias'] : 'Anonymous';
-	$data['message']		= sanitize_message($_POST['message']);
+	$data['message']		= sanitize_message_html($_POST['message']);
 
 	$db_response				= $db_controller->create_messages_entry($data);
 
