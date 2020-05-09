@@ -12,7 +12,7 @@ function sanitize_message_html($message) {
 	$message_html										= new DOMDocument();
 	$message_html->validateOnParse	= true;
 
-	$message_html->loadHTML($message_string);
+	$message_html->loadHTML(mb_convert_encoding($message_string, 'HTML-ENTITIES', 'UTF-8'));
 
 	foreach ($blacklisted_tags as $tag) {
 		$target_nodes = $message_html->getElementsByTagName($tag);
@@ -32,6 +32,3 @@ function sanitize_message_html($message) {
 
 	return $message_html->saveHTML($message_body);
 }
-
-
-// <STYLE type="TEXT/CSS">.asd { color: red; }</style> <span color="red">asdasd</span> <style>.messages { color: yellow; }</style> <STYLE>.messages { color: green; }</style> <style>.messages { color: blue; }
