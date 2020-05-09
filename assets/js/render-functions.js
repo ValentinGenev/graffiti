@@ -11,11 +11,7 @@ function renderMessageEntry(entry, className = '') {
 	let entryContainer				= document.createElement('div')
 	entryContainer.id					= id
 	entryContainer.className	= className !== '' ? `message ${className}` :  'message'
-
-	let entryContent					= document.createElement('span')
-	entryContent.className		= 'message-content'
-	entryContent.innerText		= message
-	entryContainer.appendChild(entryContent)
+	entryContainer.innerHTML	= message
 
 	let entryPoster						= document.createElement('span')
 	entryPoster.className			= poster !== 'Anonymous' ? 'message-poster' : 'message-poster hide'

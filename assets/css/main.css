@@ -141,13 +141,18 @@ textarea:active {
 .yours .message-content {
 	text-decoration: underline;
 }
+.message-content {
+	margin-right: .5rem;
+}
 .message-poster,
 .message-date {
-	padding-left: .5rem;
 	font-weight: 300;
 }
 .message-poster {
 	font-style: italic;
+}
+.message-date {
+	padding-left: .5rem;
 }
 .load-more {
 	position: relative;

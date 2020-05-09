@@ -15,3 +15,7 @@ A basic anonymous message board
 ### Sprint after
 1. Allow html with inline styles to be sent to the database;
 2. make sure that the JavaScript isn't allowed.
+
+
+### Pool
+- Make sure one can't put more than two new lines in a row;
