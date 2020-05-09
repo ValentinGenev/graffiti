@@ -9,12 +9,10 @@ A basic anonymous message board
 ## To do
 
 ### Next
-1. Log readable text instead of the server errors;
-2. ~~add some styles.~~
+1. Make sure that posts don't overflow the veiwport.
 
 ### Sprint after
-1. Allow html with inline styles to be sent to the database;
-2. make sure that the JavaScript isn't allowed.
+1. Log readable text instead of the server errors.
 
 
 ### Pool
