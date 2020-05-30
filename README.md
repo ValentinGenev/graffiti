@@ -1,5 +1,5 @@
 # graffiti
-A basic anonymous message board
+A basic anonymous message board. A demo can be seen [here](http://graffiti.sitesandbox.eu/).
 
 ## Setup
 1. In `/credentials` remove '-sample' from the `creds-sample.php`;
