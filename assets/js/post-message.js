@@ -10,6 +10,7 @@ window.addEventListener("load", () => {
 
 		if (!submitResponse.error) {
 			document.querySelectorAll('.yours').forEach(message => message.classList.add('old'))
+			messageForm.reset()
 
 			const { postedMessage } = submitResponse
 
