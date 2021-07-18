@@ -1,107 +1,59 @@
 window.addEventListener("load", () => {
-	const NEW_MESSAGE					= document.querySelector('#new_message')
-	const MESSAGES_CONTAINER	= document.querySelector('#messages_container')
+	const messageForm = document.querySelector('#new_message')
+	const messagesContainer = document.querySelector('#messages_container')
 
-	NEW_MESSAGE.addEventListener('submit', event => {
+	messageForm.addEventListener('submit', async event => {
 		event.preventDefault()
+		messageForm.classList.toggle('loading')
 
-		postFetch(NEW_MESSAGE, handleResponse)
-		.then(({ postedMessage }) => {
+		const submitResponse = await postFormData(messageForm)
+
+		if (!submitResponse.error) {
 			document.querySelectorAll('.yours').forEach(message => message.classList.add('old'))
 
-			showPostersMessage(postedMessage)
+			const { postedMessage } = submitResponse
 
-			let firstOldMessage		= document.querySelector('.message.old')
-			let unloadedMessages	= (postedMessage.id - firstOldMessage.id) - 1 // the difference between two IDs has the value of minimum 1
+			messagesContainer.insertBefore(renderMessageEntry(postedMessage), messagesContainer.firstChild)
+			messagesContainer.firstChild.classList.add('yours')
+
+			// Render messages by other users if there are any
+			const firstOldMessage = document.querySelector('.message.old')
+			const unloadedMessages = (postedMessage.id - firstOldMessage.id) - 1 // the difference between two IDs has the value of minimum 1
 
 			if (unloadedMessages !== 0) {
-				let loadMoreButton	= renderLoadMore(unloadedMessages)
+				const loadMoreButton = renderLoadMore(unloadedMessages)
 
-				loadMoreButton.addEventListener('click', function() {
-					customGetFetch({ count: unloadedMessages, oldest_loaded: postedMessage.id}, showNewerMessages)
+				loadMoreButton.addEventListener('click', function () {
+					customGetFetch({ count: unloadedMessages, oldest_loaded: postedMessage.id }, showNewerMessages)
 					this.remove()
 				})
 
-				MESSAGES_CONTAINER.insertBefore(loadMoreButton, firstOldMessage)
+				messagesContainer.insertBefore(loadMoreButton, firstOldMessage)
 			}
-		})
+		}
+
+		document.querySelector('#new_message .response').innerText = submitResponse.error ? submitResponse.error : submitResponse.responseMessage
+		messageForm.classList.toggle('loading')
 	})
 })
 
 
 /**
- * Show poster's last message
- *
- * @param {Object} message
- */
-function showPostersMessage(message) {
-	const MESSAGES_CONTAINER	= document.querySelector('#messages_container')
-
-	MESSAGES_CONTAINER.insertBefore(renderMessageEntry(message), MESSAGES_CONTAINER.firstChild)
-	MESSAGES_CONTAINER.firstChild.classList.add('yours')
-}
-
-
-/**
- * Shows users the server response
- *
- * @param {String} responseText
- */
-function handleResponse(responseText) {
-	document.querySelector('#new_message .response').innerText = responseText
-}
-
-
-/**
- * Sends POST AJAX request to the backend
+ * Submits a form and sends a POST request
  *
  * @param {Node} form
- * @param {Function} callback
+ * @returns {JSON}
  */
-function postFetch(form, callback = (responseText) => console.log(responseText)) {
-	const INPUT_FIELDS		= form.querySelectorAll('input:not([type=submit])')
-	const TEXTAREA_FIELD	= form.querySelectorAll('textarea')
-	let formData					= new FormData()
+async function postFormData(form) {
+	const fields = form.querySelectorAll('input:not([type=submit]), textarea')
+	const formData = new FormData()
 
+	fields?.forEach(field => formData.append(field.getAttribute('name'), field.value))
 
-	// Get all fields' values
-	INPUT_FIELDS.forEach(field => formData.append(field.getAttribute('name'), field.value))
-	if (TEXTAREA_FIELD) TEXTAREA_FIELD.forEach(text => formData.append(text.getAttribute('name'), text.value))
-
-
-	form.classList.toggle('loading')
-
-	return new Promise((resolve, reject) => {
-		fetch(form.getAttribute('action'), {
-			method: 	'POST',
-			body:			formData,
-		})
-		.then(response => {
-			let responseStatus = response.status
-
-			form.classList.toggle('loading')
-
-			return response.text().then(response => { return { status: responseStatus, responseText: response } })
-		})
-		.then(response => {
-			const {status, responseText} = response
-
-			if (status === 200) {
-				form.reset()
-
-				const { posted_message, response_message } = JSON.parse(responseText)
-
-				callback(response_message)
-				resolve({ postedMessage: posted_message, responseText: response_message })
-			}
-			else {
-				callback(responseText)
-				reject({ responseText: responseText })
-			}
-		})
-		.catch(reason => {
-			callback(reason)
-			reject({ responseText: reason })
-		})
+	const postRequest = await fetch(form.getAttribute('action'), {
+		method: 'POST',
+		body: formData,
 	})
+
+	return await postRequest.json()
 }
