@@ -11,7 +11,7 @@ window.addEventListener("load", () => {
 			return messages
 		})
 		.then(() => fillScreenWithMessages(BODY, SCREEN_HEIGHT))
-		// TODO: add error handling
+	// TODO: add error handling
 
 
 	// Load more messages when near the bottom of the list
@@ -29,7 +29,7 @@ window.addEventListener("load", () => {
 						console.warn(response.error)
 					}
 				})
-				// TODO: add error handling
+			// TODO: add error handling
 		}
 	}, 50)
 
@@ -44,7 +44,7 @@ window.addEventListener("load", () => {
 			.then((response) => {
 				!response.error && showNewestMessages(response) || console.warn(response.error)
 			})
-			// TODO: add error handling
+		// TODO: add error handling
 	})
 })
 
@@ -69,7 +69,7 @@ function fillScreenWithMessages(body, screenHeight) {
 				fillScreenWithMessages(body, screenHeight)
 			}
 		})
-		// TODO: add error handling
+	// TODO: add error handling
 }
 
 
@@ -106,11 +106,10 @@ function showNewestMessages(messages) {
  * Sends GET AJAX request to the backend
  *
  * @param		{Object}		data
- * @param		{Function}	callback
  * @param		{String}		action
  * @return	{Promise}		fetchResponse
  */
-async function customGetFetch(data, callback = (responseText) => console.log(responseText), action = './database/get-messages.php') {
+async function customGetFetch(data, action = './database/get-messages.php') {
 	let urlWithParams = `${action}?`
 	Object.keys(data).forEach(param => urlWithParams += `${param}=${data[param]}&`)
 
