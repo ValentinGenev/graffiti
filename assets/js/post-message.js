@@ -6,13 +6,13 @@ window.addEventListener("load", () => {
 		event.preventDefault()
 		messageForm.classList.toggle('loading')
 
-		const submitResponse = await postFormData(messageForm)
+		const postResponse = await postFormData(messageForm)
 
-		if (!submitResponse.error) {
+		if (!postResponse.error) {
 			document.querySelectorAll('.yours').forEach(message => message.classList.add('old'))
 			messageForm.reset()
 
-			const { postedMessage } = submitResponse
+			const { postedMessage } = postResponse
 
 			messagesContainer.insertBefore(renderMessageEntry(postedMessage), messagesContainer.firstChild)
 			messagesContainer.firstChild.classList.add('yours')
@@ -33,7 +33,7 @@ window.addEventListener("load", () => {
 			}
 		}
 
-		document.querySelector('#new_message .response').innerText = submitResponse.error ? submitResponse.error : submitResponse.responseMessage
+		document.querySelector('#new_message .response').innerText = postResponse.error ? postResponse.error : postResponse.responseMessage
 		messageForm.classList.toggle('loading')
 	})
 })

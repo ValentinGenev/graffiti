@@ -7,7 +7,7 @@ class Table_Actions {
 	private $db_connection;
 
 	function __construct($db_connection) {
-		$this->db_connection	= $db_connection;
+		$this->db_connection = $db_connection;
 	}
 
 	function create_messages_table() {
@@ -34,7 +34,7 @@ class Table_Actions {
 		$poster			= $this->db_connection->real_escape_string($data['poster']);
 		$message		= $this->db_connection->real_escape_string($data['message']);
 
-		$message	= "INSERT INTO Messages (poster_id, poster, message)
+		$message		= "INSERT INTO Messages (poster_id, poster, message)
 			VALUES ('$poster_id', '{$poster}', '{$message}');
 		";
 

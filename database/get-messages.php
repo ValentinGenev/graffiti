@@ -25,6 +25,7 @@ if (isset($db_response->num_rows) && $db_response->num_rows > 0) {
 	print_r(json_encode($messages));
 }
 else {
-	http_response_code(404);
-	print_r(json_encode(['error' => 'No messages were loaded.']));
+	http_response_code(204);
 }
+
+$db_connection->close_connection();
