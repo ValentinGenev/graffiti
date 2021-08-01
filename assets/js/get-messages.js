@@ -11,7 +11,6 @@ window.addEventListener("load", () => {
 			return messages
 		})
 		.then(() => fillScreenWithMessages(BODY, SCREEN_HEIGHT))
-	// TODO: add error handling
 
 
 	// Load more messages when near the bottom of the list
@@ -29,7 +28,6 @@ window.addEventListener("load", () => {
 						console.warn(response.error)
 					}
 				})
-			// TODO: add error handling
 		}
 	}, 50)
 
@@ -44,7 +42,6 @@ window.addEventListener("load", () => {
 			.then((response) => {
 				!response.error && showNewestMessages(response) || console.warn(response.error)
 			})
-		// TODO: add error handling
 	})
 })
 
@@ -69,7 +66,6 @@ function fillScreenWithMessages(body, screenHeight) {
 				fillScreenWithMessages(body, screenHeight)
 			}
 		})
-	// TODO: add error handling
 }
 
 
@@ -115,5 +111,7 @@ async function customGetFetch(data, action = './database/get-messages.php') {
 
 	const getRequest = await fetch(urlWithParams, { method: 'GET' })
 
-	return await getRequest.json();
+	return getRequest.status === 200 ?
+		await getRequest.json() :
+		{ error: getRequest.statusText }
 }
