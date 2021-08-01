@@ -20,13 +20,13 @@ window.addEventListener("load", () => {
 
 			customGetFetch({ count: 10, oldest_loaded: MESSAGE_CONTAINER.dataset.oldestLoadedMessage })
 				.then(response => {
-					if (!response.error) {
-						showMessages(response)
-						window.addEventListener('scroll', ENDLESS_SCROLL)
-					}
-					else {
+					if ('error' in response) {
 						console.warn(response.error)
+						return null
 					}
+
+					showMessages(response)
+					window.addEventListener('scroll', ENDLESS_SCROLL)
 				})
 		}
 	}, 50)
@@ -40,7 +40,7 @@ window.addEventListener("load", () => {
 
 		customGetFetch({ count: 10, newest_loaded: lastPost.id })
 			.then((response) => {
-				!response.error && showNewestMessages(response) || console.warn(response.error)
+				'error' in response ? console.warn(response.error) : showNewestMessages(response)
 			})
 	})
 })
@@ -57,12 +57,17 @@ function fillScreenWithMessages(body, screenHeight) {
 	let scrollOffset = screenHeight + 200
 
 	customGetFetch({ count: 10, oldest_loaded: oldestLoadedMessage })
-		.then(messages => {
-			showMessages(messages)
-			return messages
+		.then(response => {
+			if ('error' in response) {
+				console.warn(response.error)
+				return null
+			}
+
+			showMessages(response)
+			return response
 		})
 		.then(result => {
-			if (body.offsetHeight < scrollOffset && !result.error) {
+			if (body.offsetHeight < scrollOffset && result) {
 				fillScreenWithMessages(body, screenHeight)
 			}
 		})

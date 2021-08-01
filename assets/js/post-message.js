@@ -8,7 +8,7 @@ window.addEventListener("load", () => {
 
 		const postResponse = await postFormData(messageForm)
 
-		if (!postResponse.error) {
+		if (!Boolean('error' in postResponse)) {
 			document.querySelectorAll('.yours').forEach(message => message.classList.add('old'))
 			messageForm.reset()
 
